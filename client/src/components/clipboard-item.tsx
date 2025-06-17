@@ -14,7 +14,15 @@ import {
   Trash2, 
   Check, 
   X, 
-  ExternalLink 
+  ExternalLink,
+  Code,
+  Mail,
+  Phone,
+  Link,
+  Database,
+  Terminal,
+  FolderOpen,
+  Hash
 } from "lucide-react";
 import type { ClipboardItem as ClipboardItemType } from "@shared/schema";
 

@@ -25,6 +25,10 @@ export async function analyzeContent(content: string, manualCategory?: string, f
   try {
     const wordCount = content.trim().split(/\s+/).length;
     
+    // First, analyze content type and generate tags
+    const contentAnalysis = analyzeContentType(content);
+    const smartTitle = generateSmartTitle(content, contentAnalysis);
+    
     // Extract URL if present
     const urlMatch = content.match(/(https?:\/\/[^\s]+)/);
     const sourceUrl = urlMatch ? urlMatch[1] : undefined;
@@ -79,28 +83,41 @@ Respond with JSON in this exact format:
     return {
       decision: analysis.decision || 'maybe',
       category: analysis.category || 'personal',
-      title: analysis.title,
+      title: analysis.title || smartTitle,
       analysis: analysis.analysis || 'Content analyzed by AI',
       confidence: Math.max(0, Math.min(1, analysis.confidence || 0.5)),
       enhancedContent: analysis.enhancedContent,
       summary: wordCount > 200 ? analysis.summary : undefined,
       sourceUrl,
       wordCount,
+      contentType: contentAnalysis.contentType,
+      tags: contentAnalysis.tags,
+      language: contentAnalysis.language,
+      typeConfidence: Math.round(contentAnalysis.confidence * 100),
     };
   } catch (error) {
     console.error('OpenAI analysis failed:', error);
     
-    // Fallback analysis
+    // Generate content analysis for fallback
+    const contentAnalysis = analyzeContentType(content);
+    const smartTitle = generateSmartTitle(content, contentAnalysis);
     const wordCount = content.trim().split(/\s+/).length;
     const urlMatch = content.match(/(https?:\/\/[^\s]+)/);
     
     return {
       decision: forceKeep ? 'keep' : 'maybe',
-      category: manualCategory || 'personal',
-      analysis: `AI analysis failed: ${error.message}. Content requires manual review.`,
+      category: (manualCategory as 'work' | 'research' | 'development' | 'personal') || 'personal',
+      title: smartTitle,
+      analysis: `AI analysis failed: OpenAI service unavailable. Content analyzed locally using pattern recognition.`,
       confidence: 0.1,
+      enhancedContent: undefined,
+      summary: undefined,
       sourceUrl: urlMatch ? urlMatch[1] : undefined,
       wordCount,
+      contentType: contentAnalysis.contentType,
+      tags: contentAnalysis.tags,
+      language: contentAnalysis.language,
+      typeConfidence: Math.round(contentAnalysis.confidence * 100),
     };
   }
 }

@@ -79,7 +79,7 @@ export function analyzeContentType(content: string): ContentTags {
     { regex: /(<\/?\w+[^>]*>|@media|\.[\w-]+\s*{)/i, language: 'html', tags: ['html', 'css', 'web'] },
     
     // Shell/Bash
-    { regex: /(^#!\/bin\/bash|sudo\s+|npm\s+|git\s+|cd\s+|ls\s+|mkdir\s+)/i, language: 'bash', tags: ['bash', 'shell', 'command'] },
+    { regex: /(sudo\s+|npm\s+|git\s+|cd\s+|ls\s+|mkdir\s+|bash)/i, language: 'bash', tags: ['bash', 'shell', 'command'] },
     
     // Docker
     { regex: /(FROM\s+\w+|RUN\s+|COPY\s+|WORKDIR\s+)/i, language: 'dockerfile', tags: ['docker', 'container'] },
