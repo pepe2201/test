@@ -14,7 +14,8 @@ import {
   Zap,
   TrendingUp,
   Clock,
-  Shield
+  Shield,
+  Activity
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "wouter";
@@ -306,67 +307,54 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Features Grid */}
+        {/* Future Roadmap - Coming Soon */}
         <motion.div variants={itemVariants}>
-          <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-xl">
+          <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200 dark:border-slate-700">
             <CardHeader>
-              <CardTitle className="text-2xl text-center flex items-center justify-center space-x-2">
-                <Sparkles className="w-6 h-6 text-purple-600" />
-                <span>Powerful Features</span>
+              <CardTitle className="text-xl text-center flex items-center justify-center space-x-2">
+                <Sparkles className="w-5 h-5 text-slate-500" />
+                <span className="text-slate-600 dark:text-slate-400">Future Capabilities - Coming Soon</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <motion.div 
-                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-                  whileHover={{ y: -5 }}
+                  className="text-center p-4 rounded-lg bg-slate-50 dark:bg-slate-700/30 opacity-70"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <Clipboard className="w-8 h-8 text-white" />
+                  <div className="w-12 h-12 bg-gradient-to-r from-slate-400 to-slate-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Clipboard className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Smart Clipboard</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Automatically captures and organizes your clipboard content
+                  <h3 className="font-semibold text-slate-700 dark:text-slate-300 mb-2">Auto Clipboard Monitor</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Automatic background clipboard monitoring
                   </p>
+                  <Badge variant="secondary" className="mt-2 text-xs">Coming Soon</Badge>
                 </motion.div>
 
                 <motion.div 
-                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-                  whileHover={{ y: -5 }}
+                  className="text-center p-4 rounded-lg bg-slate-50 dark:bg-slate-700/30 opacity-70"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <FolderOpen className="w-8 h-8 text-white" />
+                  <div className="w-12 h-12 bg-gradient-to-r from-slate-400 to-slate-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <FolderOpen className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Auto Categories</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    AI-powered categorization for better organization
+                  <h3 className="font-semibold text-slate-700 dark:text-slate-300 mb-2">Desktop App</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Native desktop application for seamless integration
                   </p>
+                  <Badge variant="secondary" className="mt-2 text-xs">Planned</Badge>
                 </motion.div>
 
                 <motion.div 
-                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-                  whileHover={{ y: -5 }}
+                  className="text-center p-4 rounded-lg bg-slate-50 dark:bg-slate-700/30 opacity-70"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <Clock className="w-8 h-8 text-white" />
+                  <div className="w-12 h-12 bg-gradient-to-r from-slate-400 to-slate-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Settings className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Time Tracking</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Keep track of when and how you use your clipboard
+                  <h3 className="font-semibold text-slate-700 dark:text-slate-300 mb-2">Advanced Automation</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Custom rules and automated workflows
                   </p>
-                </motion.div>
-
-                <motion.div 
-                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <Shield className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Secure Storage</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Your data is encrypted and stored securely
-                  </p>
+                  <Badge variant="secondary" className="mt-2 text-xs">Future</Badge>
                 </motion.div>
               </div>
             </CardContent>
