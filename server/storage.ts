@@ -1,5 +1,7 @@
 import { clipboardItems, type ClipboardItem, type InsertClipboardItem } from "@shared/schema";
 import { format, isToday, isYesterday, startOfDay, endOfDay } from "date-fns";
+import { db } from "./db";
+import { eq, desc, and, gte, lte, ilike, or } from "drizzle-orm";
 
 export interface IStorage {
   getItem(id: number): Promise<ClipboardItem | undefined>;
@@ -21,179 +23,100 @@ export interface IStorage {
   }>;
 }
 
-export class MemStorage implements IStorage {
-  private items: Map<number, ClipboardItem>;
-  private currentId: number;
-
-  constructor() {
-    this.items = new Map();
-    this.currentId = 1;
-    this.initializeSampleData();
-  }
-
-  private initializeSampleData() {
-    const sampleItems = [
-      {
-        content: "// React component for handling user authentication\nfunction LoginForm() {\n  const [email, setEmail] = useState('');\n  const [password, setPassword] = useState('');\n  return (\n    <form onSubmit={handleLogin}>\n      <input type=\"email\" value={email} onChange={(e) => setEmail(e.target.value)} />\n      <input type=\"password\" value={password} onChange={(e) => setPassword(e.target.value)} />\n      <button type=\"submit\">Login</button>\n    </form>\n  );\n}",
-        category: "development",
-        aiDecision: "keep",
-        aiAnalysis: "Useful React component code for authentication. Worth keeping for reference.",
-        title: "React Login Form Component",
-        enhancedContent: null,
-        summary: null,
-        sourceUrl: null,
-        wordCount: 45,
-        manualOverride: false,
-      },
-      {
-        content: "Meeting notes from team standup:\n- Sprint planning next week\n- Code review process improvements\n- New deployment pipeline ready\n- Bug fixes for mobile responsive issues",
-        category: "work",
-        aiDecision: "keep",
-        aiAnalysis: "Important meeting notes with actionable items. Should be kept for reference.",
-        title: "Team Standup Meeting Notes",
-        enhancedContent: null,
-        summary: "Sprint planning scheduled, code review improvements, deployment pipeline ready, mobile bug fixes needed",
-        sourceUrl: null,
-        wordCount: 28,
-        manualOverride: false,
-      },
-      {
-        content: "Check out this interesting article about AI trends in 2024: https://techcrunch.com/ai-trends-2024",
-        category: "research",
-        aiDecision: "maybe",
-        aiAnalysis: "Casual link sharing that might be worth reviewing later. Uncertain value.",
-        title: "AI Trends Article Link",
-        enhancedContent: null,
-        summary: null,
-        sourceUrl: "https://techcrunch.com/ai-trends-2024",
-        wordCount: 12,
-        manualOverride: false,
-      },
-      {
-        content: "Grocery list: milk, bread, eggs, coffee, bananas, chicken, rice, pasta",
-        category: "personal",
-        aiDecision: "discard",
-        aiAnalysis: "Temporary shopping list that has no long-term value.",
-        title: "Grocery Shopping List",
-        enhancedContent: null,
-        summary: null,
-        sourceUrl: null,
-        wordCount: 11,
-        manualOverride: false,
-      },
-      {
-        content: "Important research paper on machine learning optimization techniques. This paper introduces novel approaches to gradient descent that could significantly improve training efficiency for large neural networks.",
-        category: "research",
-        aiDecision: "keep",
-        aiAnalysis: "Valuable research content about ML optimization. Definitely worth keeping.",
-        title: "ML Optimization Research Paper",
-        enhancedContent: "Important research paper on machine learning optimization techniques. This paper introduces novel approaches to gradient descent that could significantly improve training efficiency for large neural networks.",
-        summary: "Research paper introducing novel gradient descent approaches for improving neural network training efficiency",
-        sourceUrl: null,
-        wordCount: 27,
-        manualOverride: false,
-      }
-    ];
-
-    sampleItems.forEach(item => {
-      const id = this.currentId++;
-      const clipboardItem: ClipboardItem = {
-        ...item,
-        id,
-        createdAt: new Date(Date.now() - Math.random() * 86400000 * 2), // Random time within last 2 days
-        title: item.title ?? null,
-        enhancedContent: item.enhancedContent ?? null,
-        summary: item.summary ?? null,
-        sourceUrl: item.sourceUrl ?? null,
-        wordCount: item.wordCount ?? null,
-        manualOverride: item.manualOverride ?? null,
-      };
-      this.items.set(id, clipboardItem);
-    });
-  }
-
+export class DatabaseStorage implements IStorage {
   async getItem(id: number): Promise<ClipboardItem | undefined> {
-    return this.items.get(id);
+    const [item] = await db.select().from(clipboardItems).where(eq(clipboardItems.id, id));
+    return item || undefined;
   }
 
   async getAllItems(): Promise<ClipboardItem[]> {
-    return Array.from(this.items.values()).sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    return await db.select().from(clipboardItems).orderBy(desc(clipboardItems.createdAt));
   }
 
   async getItemsByCategory(category: string): Promise<ClipboardItem[]> {
-    return Array.from(this.items.values())
-      .filter(item => item.category === category)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return await db.select()
+      .from(clipboardItems)
+      .where(eq(clipboardItems.category, category))
+      .orderBy(desc(clipboardItems.createdAt));
   }
 
   async getItemsByDecision(decision: string): Promise<ClipboardItem[]> {
-    return Array.from(this.items.values())
-      .filter(item => item.aiDecision === decision)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return await db.select()
+      .from(clipboardItems)
+      .where(eq(clipboardItems.aiDecision, decision))
+      .orderBy(desc(clipboardItems.createdAt));
   }
 
   async getTodayItems(): Promise<ClipboardItem[]> {
-    const today = new Date();
-    return Array.from(this.items.values())
-      .filter(item => isToday(new Date(item.createdAt)))
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const today = startOfDay(new Date());
+    const tomorrow = endOfDay(new Date());
+    
+    return await db.select()
+      .from(clipboardItems)
+      .where(and(
+        gte(clipboardItems.createdAt, today),
+        lte(clipboardItems.createdAt, tomorrow)
+      ))
+      .orderBy(desc(clipboardItems.createdAt));
   }
 
   async getYesterdayItems(): Promise<ClipboardItem[]> {
-    return Array.from(this.items.values())
-      .filter(item => isYesterday(new Date(item.createdAt)))
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const yesterday = startOfDay(new Date(Date.now() - 24 * 60 * 60 * 1000));
+    const yesterdayEnd = endOfDay(new Date(Date.now() - 24 * 60 * 60 * 1000));
+    
+    return await db.select()
+      .from(clipboardItems)
+      .where(and(
+        gte(clipboardItems.createdAt, yesterday),
+        lte(clipboardItems.createdAt, yesterdayEnd)
+      ))
+      .orderBy(desc(clipboardItems.createdAt));
   }
 
   async searchItems(query: string, category?: string, decision?: string): Promise<ClipboardItem[]> {
-    const lowercaseQuery = query.toLowerCase();
-    
-    return Array.from(this.items.values())
-      .filter(item => {
-        const matchesQuery = 
-          item.content.toLowerCase().includes(lowercaseQuery) ||
-          item.title?.toLowerCase().includes(lowercaseQuery) ||
-          item.aiAnalysis.toLowerCase().includes(lowercaseQuery) ||
-          item.summary?.toLowerCase().includes(lowercaseQuery);
-        
-        const matchesCategory = !category || item.category === category;
-        const matchesDecision = !decision || item.aiDecision === decision;
-        
-        return matchesQuery && matchesCategory && matchesDecision;
-      })
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    let whereConditions = [
+      or(
+        ilike(clipboardItems.content, `%${query}%`),
+        ilike(clipboardItems.title, `%${query}%`),
+        ilike(clipboardItems.aiAnalysis, `%${query}%`),
+        ilike(clipboardItems.summary, `%${query}%`)
+      )
+    ];
+
+    if (category) {
+      whereConditions.push(eq(clipboardItems.category, category));
+    }
+
+    if (decision) {
+      whereConditions.push(eq(clipboardItems.aiDecision, decision));
+    }
+
+    return await db.select()
+      .from(clipboardItems)
+      .where(and(...whereConditions))
+      .orderBy(desc(clipboardItems.createdAt));
   }
 
-  async createItem(insertItem: InsertClipboardItem): Promise<ClipboardItem> {
-    const id = this.currentId++;
-    const item: ClipboardItem = {
-      ...insertItem,
-      id,
-      createdAt: new Date(),
-      title: insertItem.title ?? null,
-      enhancedContent: insertItem.enhancedContent ?? null,
-      summary: insertItem.summary ?? null,
-      sourceUrl: insertItem.sourceUrl ?? null,
-      wordCount: insertItem.wordCount ?? null,
-      manualOverride: insertItem.manualOverride ?? null,
-    };
-    this.items.set(id, item);
-    return item;
+  async createItem(item: InsertClipboardItem): Promise<ClipboardItem> {
+    const [created] = await db
+      .insert(clipboardItems)
+      .values(item)
+      .returning();
+    return created;
   }
 
   async updateItem(id: number, updates: Partial<ClipboardItem>): Promise<ClipboardItem | undefined> {
-    const item = this.items.get(id);
-    if (!item) return undefined;
-    
-    const updatedItem = { ...item, ...updates };
-    this.items.set(id, updatedItem);
-    return updatedItem;
+    const [updated] = await db
+      .update(clipboardItems)
+      .set(updates)
+      .where(eq(clipboardItems.id, id))
+      .returning();
+    return updated || undefined;
   }
 
   async deleteItem(id: number): Promise<boolean> {
-    return this.items.delete(id);
+    const result = await db.delete(clipboardItems).where(eq(clipboardItems.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   async getStats(): Promise<{
@@ -203,7 +126,7 @@ export class MemStorage implements IStorage {
     todayItems: number;
     categories: Record<string, number>;
   }> {
-    const items = Array.from(this.items.values());
+    const items = await this.getAllItems();
     const today = new Date();
     
     const stats = {
@@ -223,4 +146,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
