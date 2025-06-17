@@ -1,7 +1,21 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, User, Settings } from "lucide-react";
+import { 
+  LogOut, 
+  User, 
+  Settings, 
+  Clipboard, 
+  Sparkles, 
+  BarChart3, 
+  FolderOpen,
+  Zap,
+  TrendingUp,
+  Clock,
+  Shield
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "wouter";
 
@@ -32,7 +46,7 @@ export default function Home() {
     }
   };
 
-  const getInitials = (firstName?: string, lastName?: string, email?: string) => {
+  const getInitials = (firstName?: string | null, lastName?: string | null, email?: string | null) => {
     if (firstName && lastName) {
       return `${firstName[0]}${lastName[0]}`.toUpperCase();
     }
@@ -45,151 +59,264 @@ export default function Home() {
     return "U";
   };
 
-  const getDisplayName = (firstName?: string, lastName?: string, email?: string) => {
+  const getDisplayName = (firstName?: string | null, lastName?: string | null, email?: string | null) => {
     if (firstName && lastName) {
       return `${firstName} ${lastName}`;
     }
     if (firstName) {
       return firstName;
     }
-    if (email) {
-      return email;
-    }
-    return "User";
+    return email || "User";
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950">
       <motion.div
         className="container mx-auto px-4 py-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Header */}
+        {/* Hero Header */}
         <motion.div 
-          className="flex items-center justify-between mb-8"
+          className="text-center mb-12"
           variants={itemVariants}
         >
-          <div className="flex items-center space-x-4">
-            <Avatar className="w-12 h-12">
-              <AvatarImage 
-                src={user?.profileImageUrl || ""} 
-                alt={getDisplayName(user?.firstName, user?.lastName, user?.email)}
-                className="object-cover"
-              />
-              <AvatarFallback className="bg-blue-600 text-white">
-                {getInitials(user?.firstName, user?.lastName, user?.email)}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                Welcome back, {user?.firstName || "User"}!
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                Your intelligent clipboard manager is ready
-              </p>
-            </div>
+          <div className="flex justify-center mb-6">
+            <motion.div 
+              className="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <Clipboard className="w-10 h-10 text-white" />
+            </motion.div>
           </div>
-          <Button 
-            onClick={handleLogout}
-            variant="outline"
-            className="flex items-center space-x-2"
+          <motion.h1 
+            className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            <LogOut className="w-4 h-4" />
-            <span>Sign Out</span>
-          </Button>
+            Welcome to ClipAI
+          </motion.h1>
+          <motion.p 
+            className="text-xl text-slate-600 dark:text-slate-300 mb-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            Hello, {user?.firstName || "User"}!
+          </motion.p>
+          <motion.p 
+            className="text-slate-500 dark:text-slate-400"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Your intelligent clipboard manager powered by AI
+          </motion.p>
         </motion.div>
 
-        {/* Quick Actions */}
+        {/* User Profile Card */}
         <motion.div 
-          className="grid md:grid-cols-2 gap-6 mb-8"
+          className="mb-12"
+          variants={itemVariants}
+        >
+          <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-xl">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <Avatar className="w-16 h-16 ring-4 ring-blue-200 dark:ring-blue-800">
+                    <AvatarImage 
+                      src={user?.profileImageUrl || ""} 
+                      alt={getDisplayName(user?.firstName, user?.lastName, user?.email)}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg">
+                      {getInitials(user?.firstName, user?.lastName, user?.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                      {getDisplayName(user?.firstName, user?.lastName, user?.email)}
+                    </h2>
+                    <p className="text-slate-600 dark:text-slate-400">{user?.email}</p>
+                    <div className="flex items-center mt-2">
+                      <div className="flex items-center text-green-600 dark:text-green-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
+                        <span className="text-sm">Active</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Button 
+                  onClick={handleLogout}
+                  variant="outline"
+                  className="flex items-center space-x-2 hover:bg-red-50 hover:border-red-200 hover:text-red-600 dark:hover:bg-red-950 dark:hover:border-red-800 dark:hover:text-red-400"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Quick Actions Grid */}
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
           variants={containerVariants}
         >
           <motion.div variants={itemVariants}>
             <Link href="/dashboard">
-              <motion.div
-                className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-pointer"
-                whileHover={{ 
-                  scale: 1.02,
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                  View Dashboard
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
-                  Manage your clipboard items with AI-powered analysis
-                </p>
-                <div className="text-blue-600 dark:text-blue-400 font-medium">
-                  Open Dashboard →
-                </div>
-              </motion.div>
+              <Card className="group cursor-pointer bg-gradient-to-br from-blue-500 to-blue-600 border-0 text-white overflow-hidden hover:shadow-2xl transition-all duration-300">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="relative"
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-white/20 rounded-lg">
+                        <BarChart3 className="w-6 h-6" />
+                      </div>
+                      <CardTitle className="text-xl">Dashboard</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-blue-100 mb-4">
+                      View analytics, manage content, and track your clipboard activity
+                    </p>
+                    <div className="flex items-center text-white/80">
+                      <TrendingUp className="w-4 h-4 mr-2" />
+                      <span className="text-sm">Real-time insights</span>
+                    </div>
+                  </CardContent>
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300" />
+                </motion.div>
+              </Card>
             </Link>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Link href="/settings">
-              <motion.div
-                className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-pointer"
-                whileHover={{ 
-                  scale: 1.02,
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                  Account Settings
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
-                  Manage your profile and preferences
-                </p>
-                <div className="text-blue-600 dark:text-blue-400 font-medium">
-                  Open Settings →
-                </div>
-              </motion.div>
+              <Card className="group cursor-pointer bg-gradient-to-br from-purple-500 to-purple-600 border-0 text-white overflow-hidden hover:shadow-2xl transition-all duration-300">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="relative"
+                >
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-white/20 rounded-lg">
+                        <Settings className="w-6 h-6" />
+                      </div>
+                      <CardTitle className="text-xl">Settings</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-purple-100 mb-4">
+                      Customize your profile, security settings, and preferences
+                    </p>
+                    <div className="flex items-center text-white/80">
+                      <Shield className="w-4 h-4 mr-2" />
+                      <span className="text-sm">Secure & Private</span>
+                    </div>
+                  </CardContent>
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300" />
+                </motion.div>
+              </Card>
             </Link>
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="md:col-span-2 lg:col-span-1">
+            <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white h-full">
+              <CardHeader className="pb-2">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <CardTitle className="text-xl">AI Powered</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-emerald-100 mb-4">
+                  Intelligent content analysis and smart categorization
+                </p>
+                <div className="flex items-center text-white/80">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  <span className="text-sm">Always learning</span>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
         </motion.div>
 
-        {/* User Info Card */}
-        <motion.div 
-          className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700"
-          variants={itemVariants}
-        >
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center space-x-2">
-            <User className="w-5 h-5" />
-            <span>Your Profile</span>
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Name</label>
-              <p className="text-slate-900 dark:text-slate-100">
-                {getDisplayName(user?.firstName, user?.lastName, user?.email)}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Email</label>
-              <p className="text-slate-900 dark:text-slate-100">
-                {user?.email || "Not provided"}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Member Since</label>
-              <p className="text-slate-900 dark:text-slate-100">
-                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Recently"}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-600 dark:text-slate-400">User ID</label>
-              <p className="text-slate-900 dark:text-slate-100 font-mono text-sm">
-                {user?.id || "Loading..."}
-              </p>
-            </div>
-          </div>
+        {/* Features Grid */}
+        <motion.div variants={itemVariants}>
+          <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-2xl text-center flex items-center justify-center space-x-2">
+                <Sparkles className="w-6 h-6 text-purple-600" />
+                <span>Powerful Features</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <motion.div 
+                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <Clipboard className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Smart Clipboard</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Automatically captures and organizes your clipboard content
+                  </p>
+                </motion.div>
+
+                <motion.div 
+                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <FolderOpen className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Auto Categories</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    AI-powered categorization for better organization
+                  </p>
+                </motion.div>
+
+                <motion.div 
+                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <Clock className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Time Tracking</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Keep track of when and how you use your clipboard
+                  </p>
+                </motion.div>
+
+                <motion.div 
+                  className="text-center p-4 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                  whileHover={{ y: -5 }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <Shield className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Secure Storage</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Your data is encrypted and stored securely
+                  </p>
+                </motion.div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
       </motion.div>
     </div>
