@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Sidebar } from "@/components/sidebar";
 import { StatsBar } from "@/components/stats-bar";
 import { TimelineView } from "@/components/timeline-view";
 import { AddContentModal } from "@/components/add-content-modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, RefreshCw, Grid } from "lucide-react";
+import { Search, Plus, RefreshCw, Grid, X } from "lucide-react";
 import type { ClipboardItem } from "@shared/schema";
 
 export default function Dashboard() {
@@ -14,13 +14,20 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [selectedDecision, setSelectedDecision] = useState<string | undefined>();
+  const [isSearching, setIsSearching] = useState(false);
 
   const { data: items = [], isLoading, refetch } = useQuery<ClipboardItem[]>({
-    queryKey: ["/api/clipboard"],
+    queryKey: selectedCategory ? ["/api/clipboard", "category", selectedCategory] : ["/api/clipboard"],
+    queryFn: async () => {
+      const url = selectedCategory ? `/api/clipboard/category/${selectedCategory}` : "/api/clipboard";
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Failed to fetch items");
+      return res.json();
+    },
   });
 
   const { data: stats } = useQuery({
-    queryKey: ["/api/stats"],
+    queryKey: ["/api/clipboard/stats"],
     queryFn: async () => {
       const res = await fetch("/api/clipboard/stats");
       if (!res.ok) throw new Error("Failed to fetch stats");
@@ -29,8 +36,12 @@ export default function Dashboard() {
   });
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+    if (!searchQuery.trim()) {
+      refetch();
+      return;
+    }
     
+    setIsSearching(true);
     try {
       const res = await fetch("/api/clipboard/search", {
         method: "POST",
@@ -43,10 +54,21 @@ export default function Dashboard() {
       });
       
       if (!res.ok) throw new Error("Search failed");
-      // Handle search results - would need to update the items query
+      const searchResults = await res.json();
+      // Update query cache with search results
+      queryClient.setQueryData(["/api/clipboard"], searchResults);
     } catch (error) {
       console.error("Search failed:", error);
+    } finally {
+      setIsSearching(false);
     }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSelectedCategory(undefined);
+    setSelectedDecision(undefined);
+    refetch();
   };
 
   return (

@@ -64,7 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { query, category, decision } = searchClipboardSchema.parse(req.body);
       const items = await storage.searchItems(query, category, decision);
       res.json(items);
-    } catch (error) {
+    } catch (error: any) {
       if (error.issues) {
         res.status(400).json({ message: "Invalid search parameters", errors: error.issues });
       } else {
@@ -94,7 +94,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       res.json(item);
-    } catch (error) {
+    } catch (error: any) {
       if (error.issues) {
         res.status(400).json({ message: "Invalid request data", errors: error.issues });
       } else {

@@ -36,7 +36,7 @@ export function AddContentModal({ open, onClose, onSuccess }: AddContentModalPro
     mutationFn: async () => {
       return apiRequest("POST", "/api/clipboard/analyze", {
         content,
-        manualCategory: manualCategory || undefined,
+        manualCategory: manualCategory === "auto" ? undefined : manualCategory || undefined,
         forceKeep,
       });
     },
@@ -101,7 +101,7 @@ export function AddContentModal({ open, onClose, onSuccess }: AddContentModalPro
                 <SelectValue placeholder="Let AI decide" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Let AI decide</SelectItem>
+                <SelectItem value="auto">Let AI decide</SelectItem>
                 <SelectItem value="work">Work Notes</SelectItem>
                 <SelectItem value="research">Research</SelectItem>
                 <SelectItem value="development">Development</SelectItem>

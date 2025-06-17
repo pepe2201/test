@@ -90,6 +90,12 @@ export class MemStorage implements IStorage {
       ...insertItem,
       id,
       createdAt: new Date(),
+      title: insertItem.title ?? null,
+      enhancedContent: insertItem.enhancedContent ?? null,
+      summary: insertItem.summary ?? null,
+      sourceUrl: insertItem.sourceUrl ?? null,
+      wordCount: insertItem.wordCount ?? null,
+      manualOverride: insertItem.manualOverride ?? null,
     };
     this.items.set(id, item);
     return item;
