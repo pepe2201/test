@@ -13,9 +13,10 @@ interface SidebarProps {
   };
   onCategorySelect: (category: string | undefined) => void;
   selectedCategory?: string;
+  onNavigate?: (view: string) => void;
 }
 
-export function Sidebar({ stats, onCategorySelect, selectedCategory }: SidebarProps) {
+export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate }: SidebarProps) {
   const categories = [
     { key: 'work', name: 'Work Notes', color: 'bg-blue-500', count: stats?.categories?.work || 0 },
     { key: 'research', name: 'Research', color: 'bg-green-500', count: stats?.categories?.research || 0 },
@@ -45,17 +46,26 @@ export function Sidebar({ stats, onCategorySelect, selectedCategory }: SidebarPr
           <span className="font-medium">Clipboard</span>
         </Link>
         
-        <button className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left">
+        <button 
+          onClick={() => onNavigate?.('categories')}
+          className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left"
+        >
           <FolderOpen className="w-5 h-5" />
           <span className="font-medium">Categories</span>
         </button>
 
-        <button className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left">
+        <button 
+          onClick={() => onNavigate?.('search')}
+          className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left"
+        >
           <Search className="w-5 h-5" />
           <span className="font-medium">Search</span>
         </button>
 
-        <button className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left">
+        <button 
+          onClick={() => onNavigate?.('settings')}
+          className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left"
+        >
           <Settings className="w-5 h-5" />
           <span className="font-medium">Settings</span>
         </button>

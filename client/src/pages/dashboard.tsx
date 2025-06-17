@@ -15,6 +15,8 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [selectedDecision, setSelectedDecision] = useState<string | undefined>();
   const [isSearching, setIsSearching] = useState(false);
+  const [currentView, setCurrentView] = useState<string>('timeline');
+  const [viewMode, setViewMode] = useState<'timeline' | 'grid'>('timeline');
   const queryClient = useQueryClient();
 
   const { data: items = [], isLoading, refetch } = useQuery<ClipboardItem[]>({
@@ -78,6 +80,7 @@ export default function Dashboard() {
         stats={stats}
         onCategorySelect={setSelectedCategory}
         selectedCategory={selectedCategory}
+        onNavigate={setCurrentView}
       />
       
       <main className="flex-1 flex flex-col overflow-hidden">
@@ -124,7 +127,12 @@ export default function Dashboard() {
             </div>
             
             <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setViewMode(viewMode === 'timeline' ? 'grid' : 'timeline')}
+                className={viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : ''}
+              >
                 <Grid className="w-5 h-5" />
               </Button>
               <Button variant="ghost" size="icon" onClick={() => refetch()}>
