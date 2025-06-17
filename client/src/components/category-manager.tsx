@@ -76,7 +76,7 @@ export function CategoryManager() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: categories = [], isLoading } = useQuery({
+  const { data: categories = [], isLoading } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
 
@@ -223,8 +223,8 @@ export function CategoryManager() {
     return iconOption?.Icon || FolderOpen;
   };
 
-  const userCategories = categories.filter((cat: Category) => !cat.isDefault);
-  const defaultCategories = categories.filter((cat: Category) => cat.isDefault);
+  const userCategories = categories.filter((cat) => !cat.isDefault);
+  const defaultCategories = categories.filter((cat) => cat.isDefault);
 
   if (isLoading) {
     return (
