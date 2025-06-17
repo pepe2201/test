@@ -92,7 +92,7 @@ export function SettingsView() {
             <div className="flex items-center justify-between">
               <div>
                 <Label>Encrypt sensitive content</Label>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   Automatically encrypt content containing passwords or keys
                 </p>
               </div>
@@ -113,7 +113,7 @@ export function SettingsView() {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="notifications">Enable notifications</Label>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   Get notified when items need review
                 </p>
               </div>
@@ -127,7 +127,7 @@ export function SettingsView() {
             <div className="flex items-center justify-between">
               <div>
                 <Label>Daily summary</Label>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   Receive daily clipboard activity summary
                 </p>
               </div>
