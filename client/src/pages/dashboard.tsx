@@ -6,6 +6,7 @@ import { TimelineView } from "@/components/timeline-view";
 import { GridView } from "@/components/grid-view";
 import { SettingsView } from "@/components/settings-view";
 import { CategoriesView } from "@/components/categories-view";
+import { TimeTrackingView } from "@/components/time-tracking-view";
 import { AddContentModal } from "@/components/add-content-modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -139,6 +140,9 @@ export default function Dashboard() {
                 {currentView === 'categories' && (
                   <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Content Categories</h1>
                 )}
+                {currentView === 'timetracking' && (
+                  <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Time Tracking Analytics</h1>
+                )}
               </div>
             )}
             
@@ -170,6 +174,8 @@ export default function Dashboard() {
               setSelectedCategory(category);
               setCurrentView('timeline');
             }} />
+          ) : currentView === 'timetracking' ? (
+            <TimeTrackingView />
           ) : (
             <>
               <StatsBar stats={stats} />

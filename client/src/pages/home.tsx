@@ -162,94 +162,148 @@ export default function Home() {
           </Card>
         </motion.div>
 
-        {/* Quick Actions Grid */}
-        <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
-          variants={containerVariants}
-        >
-          <motion.div variants={itemVariants}>
-            <Link href="/dashboard">
-              <Card className="group cursor-pointer bg-gradient-to-br from-blue-500 to-blue-600 border-0 text-white overflow-hidden hover:shadow-2xl transition-all duration-300">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="relative"
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-white/20 rounded-lg">
-                        <BarChart3 className="w-6 h-6" />
+        {/* Available Features - What You Can Use Now */}
+        <motion.div variants={itemVariants} className="mb-12">
+          <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-4 text-center">
+            Available Now - Ready to Use
+          </h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <motion.div variants={itemVariants}>
+              <Link href="/dashboard">
+                <Card className="group cursor-pointer bg-gradient-to-br from-blue-500 to-blue-600 border-0 text-white overflow-hidden hover:shadow-2xl transition-all duration-300">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="relative"
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-white/20 rounded-lg">
+                          <BarChart3 className="w-6 h-6" />
+                        </div>
+                        <CardTitle className="text-xl">Dashboard</CardTitle>
                       </div>
-                      <CardTitle className="text-xl">Dashboard</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-blue-100 mb-4">
-                      View analytics, manage content, and track your clipboard activity
-                    </p>
-                    <div className="flex items-center text-white/80">
-                      <TrendingUp className="w-4 h-4 mr-2" />
-                      <span className="text-sm">Real-time insights</span>
-                    </div>
-                  </CardContent>
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300" />
-                </motion.div>
-              </Card>
-            </Link>
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Link href="/settings">
-              <Card className="group cursor-pointer bg-gradient-to-br from-purple-500 to-purple-600 border-0 text-white overflow-hidden hover:shadow-2xl transition-all duration-300">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="relative"
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-white/20 rounded-lg">
-                        <Settings className="w-6 h-6" />
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-blue-100 mb-4">
+                        Manage clipboard content, categories, and view analytics
+                      </p>
+                      <div className="flex items-center text-white/80">
+                        <TrendingUp className="w-4 h-4 mr-2" />
+                        <span className="text-sm">Fully functional</span>
                       </div>
-                      <CardTitle className="text-xl">Settings</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-purple-100 mb-4">
-                      Customize your profile, security settings, and preferences
-                    </p>
-                    <div className="flex items-center text-white/80">
-                      <Shield className="w-4 h-4 mr-2" />
-                      <span className="text-sm">Secure & Private</span>
-                    </div>
-                  </CardContent>
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300" />
-                </motion.div>
-              </Card>
-            </Link>
-          </motion.div>
+                    </CardContent>
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300" />
+                  </motion.div>
+                </Card>
+              </Link>
+            </motion.div>
 
-          <motion.div variants={itemVariants} className="md:col-span-2 lg:col-span-1">
-            <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white h-full">
-              <CardHeader className="pb-2">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-white/20 rounded-lg">
-                    <Zap className="w-6 h-6" />
+            <motion.div variants={itemVariants}>
+              <Link href="/settings">
+                <Card className="group cursor-pointer bg-gradient-to-br from-purple-500 to-purple-600 border-0 text-white overflow-hidden hover:shadow-2xl transition-all duration-300">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="relative"
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-white/20 rounded-lg">
+                          <User className="w-6 h-6" />
+                        </div>
+                        <CardTitle className="text-xl">Account & Settings</CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-purple-100 mb-4">
+                        Manage your profile, security, and account preferences
+                      </p>
+                      <div className="flex items-center text-white/80">
+                        <Shield className="w-4 h-4 mr-2" />
+                        <span className="text-sm">Secure & ready</span>
+                      </div>
+                    </CardContent>
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300" />
+                  </motion.div>
+                </Card>
+              </Link>
+            </motion.div>
+          </div>
+        </motion.div>
+
+        {/* Core Capabilities - What's Built In */}
+        <motion.div variants={itemVariants} className="mb-12">
+          <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-4 text-center">
+            Core Capabilities - Built Into ClipAI
+          </h3>
+          <div className="grid md:grid-cols-3 gap-6">
+            <motion.div variants={itemVariants}>
+              <Card className="bg-gradient-to-br from-emerald-500 to-teal-600 border-0 text-white">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Zap className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-xl">AI Analysis</CardTitle>
                   </div>
-                  <CardTitle className="text-xl">AI Powered</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-emerald-100 mb-4">
-                  Intelligent content analysis and smart categorization
-                </p>
-                <div className="flex items-center text-white/80">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  <span className="text-sm">Always learning</span>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-emerald-100 mb-4">
+                    Smart content categorization and analysis
+                  </p>
+                  <div className="flex items-center text-white/80">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    <span className="text-sm">OpenAI powered</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Card className="bg-gradient-to-br from-indigo-500 to-indigo-600 border-0 text-white">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <FolderOpen className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-xl">Smart Categories</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-indigo-100 mb-4">
+                    Custom categories and auto-organization
+                  </p>
+                  <div className="flex items-center text-white/80">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    <span className="text-sm">Fully working</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Card className="bg-gradient-to-br from-orange-500 to-red-500 border-0 text-white">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Clock className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-xl">Time Tracking</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-orange-100 mb-4">
+                    Usage analytics and time-based insights
+                  </p>
+                  <div className="flex items-center text-white/80">
+                    <Activity className="w-4 h-4 mr-2" />
+                    <span className="text-sm">Analytics ready</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Features Grid */}

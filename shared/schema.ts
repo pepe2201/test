@@ -30,6 +30,10 @@ export const clipboardItems = pgTable("clipboard_items", {
   confidence: integer("confidence").default(80), // confidence score for content type detection (0-100)
   userId: text("user_id").notNull().default("root"), // owner of the clipboard item
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  lastAccessedAt: timestamp("last_accessed_at").defaultNow().notNull(),
+  accessCount: integer("access_count").default(0), // number of times item was viewed/used
+  timeSpentSeconds: integer("time_spent_seconds").default(0), // total time spent viewing this item
   manualOverride: boolean("manual_override").default(false),
 });
 
