@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [selectedDecision, setSelectedDecision] = useState<string | undefined>();
   const [isSearching, setIsSearching] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: items = [], isLoading, refetch } = useQuery<ClipboardItem[]>({
     queryKey: selectedCategory ? ["/api/clipboard", "category", selectedCategory] : ["/api/clipboard"],
@@ -89,12 +90,33 @@ export default function Dashboard() {
                 <Input
                   type="text"
                   placeholder="Search clipboard history..."
-                  className="pl-10"
+                  className="pl-10 pr-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6"
+                    onClick={clearSearch}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
+              <Button 
+                onClick={handleSearch} 
+                disabled={isSearching || !searchQuery.trim()}
+                variant="outline"
+              >
+                {isSearching ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
+              </Button>
               <Button onClick={() => setShowModal(true)} className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Content

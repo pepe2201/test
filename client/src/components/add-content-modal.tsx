@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -79,6 +80,9 @@ export function AddContentModal({ open, onClose, onSuccess }: AddContentModalPro
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>Add Content Manually</DialogTitle>
+          <DialogDescription>
+            Add content to your clipboard manager. The AI will analyze and categorize it automatically.
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">

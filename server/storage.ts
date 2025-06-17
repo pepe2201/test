@@ -28,6 +28,88 @@ export class MemStorage implements IStorage {
   constructor() {
     this.items = new Map();
     this.currentId = 1;
+    this.initializeSampleData();
+  }
+
+  private initializeSampleData() {
+    const sampleItems = [
+      {
+        content: "// React component for handling user authentication\nfunction LoginForm() {\n  const [email, setEmail] = useState('');\n  const [password, setPassword] = useState('');\n  return (\n    <form onSubmit={handleLogin}>\n      <input type=\"email\" value={email} onChange={(e) => setEmail(e.target.value)} />\n      <input type=\"password\" value={password} onChange={(e) => setPassword(e.target.value)} />\n      <button type=\"submit\">Login</button>\n    </form>\n  );\n}",
+        category: "development",
+        aiDecision: "keep",
+        aiAnalysis: "Useful React component code for authentication. Worth keeping for reference.",
+        title: "React Login Form Component",
+        enhancedContent: null,
+        summary: null,
+        sourceUrl: null,
+        wordCount: 45,
+        manualOverride: false,
+      },
+      {
+        content: "Meeting notes from team standup:\n- Sprint planning next week\n- Code review process improvements\n- New deployment pipeline ready\n- Bug fixes for mobile responsive issues",
+        category: "work",
+        aiDecision: "keep",
+        aiAnalysis: "Important meeting notes with actionable items. Should be kept for reference.",
+        title: "Team Standup Meeting Notes",
+        enhancedContent: null,
+        summary: "Sprint planning scheduled, code review improvements, deployment pipeline ready, mobile bug fixes needed",
+        sourceUrl: null,
+        wordCount: 28,
+        manualOverride: false,
+      },
+      {
+        content: "Check out this interesting article about AI trends in 2024: https://techcrunch.com/ai-trends-2024",
+        category: "research",
+        aiDecision: "maybe",
+        aiAnalysis: "Casual link sharing that might be worth reviewing later. Uncertain value.",
+        title: "AI Trends Article Link",
+        enhancedContent: null,
+        summary: null,
+        sourceUrl: "https://techcrunch.com/ai-trends-2024",
+        wordCount: 12,
+        manualOverride: false,
+      },
+      {
+        content: "Grocery list: milk, bread, eggs, coffee, bananas, chicken, rice, pasta",
+        category: "personal",
+        aiDecision: "discard",
+        aiAnalysis: "Temporary shopping list that has no long-term value.",
+        title: "Grocery Shopping List",
+        enhancedContent: null,
+        summary: null,
+        sourceUrl: null,
+        wordCount: 11,
+        manualOverride: false,
+      },
+      {
+        content: "Important research paper on machine learning optimization techniques. This paper introduces novel approaches to gradient descent that could significantly improve training efficiency for large neural networks.",
+        category: "research",
+        aiDecision: "keep",
+        aiAnalysis: "Valuable research content about ML optimization. Definitely worth keeping.",
+        title: "ML Optimization Research Paper",
+        enhancedContent: "Important research paper on machine learning optimization techniques. This paper introduces novel approaches to gradient descent that could significantly improve training efficiency for large neural networks.",
+        summary: "Research paper introducing novel gradient descent approaches for improving neural network training efficiency",
+        sourceUrl: null,
+        wordCount: 27,
+        manualOverride: false,
+      }
+    ];
+
+    sampleItems.forEach(item => {
+      const id = this.currentId++;
+      const clipboardItem: ClipboardItem = {
+        ...item,
+        id,
+        createdAt: new Date(Date.now() - Math.random() * 86400000 * 2), // Random time within last 2 days
+        title: item.title ?? null,
+        enhancedContent: item.enhancedContent ?? null,
+        summary: item.summary ?? null,
+        sourceUrl: item.sourceUrl ?? null,
+        wordCount: item.wordCount ?? null,
+        manualOverride: item.manualOverride ?? null,
+      };
+      this.items.set(id, clipboardItem);
+    });
   }
 
   async getItem(id: number): Promise<ClipboardItem | undefined> {
