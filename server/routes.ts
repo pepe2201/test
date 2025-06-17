@@ -1,20 +1,70 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import express from "express";
+import passport from "passport";
 import { storage } from "./storage";
 import { analyzeContent, enhanceContent, summarizeContent } from "./services/openai";
 import { analyzeContentSchema, searchClipboardSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupLocalAuth, isLocalAuthenticated } from "./localAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication middleware
   await setupAuth(app);
+  setupLocalAuth();
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Parse JSON for login requests (already handled in main app)
+
+  // Local login route for development
+  app.post('/api/auth/local/login', (req, res, next) => {
+    passport.authenticate('local', (err: any, user: any, info: any) => {
+      if (err) {
+        return res.status(500).json({ message: 'Authentication error' });
+      }
+      if (!user) {
+        return res.status(401).json({ message: info.message || 'Invalid credentials' });
+      }
+      
+      req.logIn(user, (err: any) => {
+        if (err) {
+          return res.status(500).json({ message: 'Login error' });
+        }
+        res.json({ success: true, user: { id: user.id, isLocal: true } });
+      });
+    })(req, res, next);
+  });
+
+  // Local logout route
+  app.post('/api/auth/local/logout', (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Logout error' });
+      }
+      res.json({ success: true });
+    });
+  });
+
+  // Combined auth user route (handles both Replit and local auth)
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      // Handle local authentication
+      if (req.user?.isLocal) {
+        const user = await storage.getUser('root');
+        return res.json(user);
+      }
+
+      // Handle Replit authentication
+      if (req.user?.claims?.sub) {
+        const userId = req.user.claims.sub;
+        const user = await storage.getUser(userId);
+        return res.json(user);
+      }
+
+      res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
