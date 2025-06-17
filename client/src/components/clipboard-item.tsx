@@ -30,12 +30,44 @@ interface ClipboardItemProps {
   item: ClipboardItemType;
 }
 
+// Content type icon mapping
+const getContentTypeIcon = (contentType: string) => {
+  switch (contentType) {
+    case 'url': return Link;
+    case 'code': return Code;
+    case 'email': return Mail;
+    case 'phone': return Phone;
+    case 'json': return Hash;
+    case 'sql': return Database;
+    case 'command': return Terminal;
+    case 'path': return FolderOpen;
+    default: return FileText;
+  }
+};
+
+// Content type color mapping
+const getContentTypeColor = (contentType: string) => {
+  switch (contentType) {
+    case 'url': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+    case 'code': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+    case 'email': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+    case 'phone': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
+    case 'json': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+    case 'sql': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+    case 'command': return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+    case 'path': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200';
+    default: return 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200';
+  }
+};
+
 export function ClipboardItem({ item }: ClipboardItemProps) {
   const [showEnhanced, setShowEnhanced] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const ContentTypeIcon = getContentTypeIcon(item.contentType || 'text');
 
   const categoryColors: Record<string, string> = {
     work: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
@@ -183,20 +215,48 @@ export function ClipboardItem({ item }: ClipboardItemProps) {
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center space-x-3 mb-2">
+            <div className="flex items-center space-x-2 mb-2 flex-wrap gap-1">
+              {/* Content Type Badge */}
+              <Badge className={`${getContentTypeColor(item.contentType || 'text')} flex items-center gap-1`}>
+                <ContentTypeIcon className="w-3 h-3" />
+                {item.contentType || 'text'}
+                {item.language && ` (${item.language})`}
+              </Badge>
+              
               <Badge className={categoryColors[item.category] || "bg-gray-100 text-gray-800"}>
                 {item.category}
               </Badge>
+              
               <Badge className={decisionColors[item.aiDecision] || "bg-gray-100 text-gray-800"}>
                 {item.aiDecision === 'keep' && <Check className="w-3 h-3 mr-1" />}
                 {item.aiDecision === 'maybe' && "Review Needed"}
                 {item.aiDecision === 'discard' && "Discarded"}
                 {item.aiDecision === 'keep' && "AI Kept"}
               </Badge>
+              
               <span className="text-xs text-slate-400">
                 {format(new Date(item.createdAt), 'h:mm a')}
               </span>
             </div>
+
+            {/* Auto-generated Tags */}
+            {item.tags && item.tags.length > 0 && (
+              <div className="flex items-center space-x-1 mb-2 flex-wrap gap-1">
+                <span className="text-xs text-slate-500 mr-1">Tags:</span>
+                {item.tags.slice(0, 5).map((tag, index) => (
+                  <Badge 
+                    key={index} 
+                    variant="outline" 
+                    className="text-xs px-2 py-0 h-5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+                {item.tags.length > 5 && (
+                  <span className="text-xs text-slate-400">+{item.tags.length - 5} more</span>
+                )}
+              </div>
+            )}
             
             {item.title && (
               <h3 className="font-medium text-slate-900 mb-2">{item.title}</h3>

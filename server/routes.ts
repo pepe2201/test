@@ -281,6 +281,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         summary: analysis.summary,
         sourceUrl: analysis.sourceUrl,
         wordCount: analysis.wordCount,
+        contentType: analysis.contentType,
+        tags: analysis.tags,
+        language: analysis.language,
+        confidence: analysis.typeConfidence,
         manualOverride: forceKeep || !!manualCategory,
       });
 
