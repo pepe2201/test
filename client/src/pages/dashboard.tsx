@@ -156,6 +156,7 @@ export default function Dashboard() {
               <Button variant="ghost" size="icon" onClick={() => refetch()}>
                 <RefreshCw className="w-5 h-5" />
               </Button>
+              <ThemeToggle />
             </div>
           </div>
         </header>
