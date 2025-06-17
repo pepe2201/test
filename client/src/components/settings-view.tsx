@@ -6,18 +6,19 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Settings, Monitor, Shield, Bell, Trash2 } from "lucide-react";
+import { useTheme } from "@/components/theme-provider";
 
 export function SettingsView() {
   const [autoAnalyze, setAutoAnalyze] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [retentionPeriod, setRetentionPeriod] = useState("30");
-  const [theme, setTheme] = useState("light");
+  const { theme, setTheme } = useTheme();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-3 mb-6">
-        <Settings className="w-6 h-6 text-blue-600" />
-        <h1 className="text-2xl font-semibold text-slate-900">Settings</h1>
+        <Settings className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Settings</h1>
       </div>
 
       <div className="grid gap-6">
@@ -33,7 +34,7 @@ export function SettingsView() {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="auto-analyze">Auto-analyze clipboard content</Label>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                   Automatically analyze new content when copied
                 </p>
               </div>
@@ -83,7 +84,7 @@ export function SettingsView() {
                   <SelectItem value="never">Never delete</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 Items older than this period will be automatically deleted
               </p>
             </div>
