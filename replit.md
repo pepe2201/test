@@ -47,8 +47,9 @@ The application uses a single main table `clipboard_items` with the following st
 
 ### Storage Layer (`server/storage.ts`)
 - Abstract storage interface for flexibility
-- In-memory implementation for development
-- Methods for CRUD operations, filtering, and search
+- PostgreSQL database implementation with Drizzle ORM
+- Full CRUD operations with optimized queries
+- Advanced search with case-insensitive filtering
 - Statistics aggregation for dashboard
 
 ### Frontend Components
@@ -109,7 +110,10 @@ The application uses a single main table `clipboard_items` with the following st
 ## Changelog
 
 Changelog:
-- June 17, 2025. Initial setup
+- June 17, 2025. Initial setup with React frontend and Express backend
+- June 17, 2025. Added PostgreSQL database with Drizzle ORM integration
+- June 17, 2025. Implemented full navigation system with Settings and Categories views
+- June 17, 2025. Database schema deployed and populated with sample data
 
 ## User Preferences
 
