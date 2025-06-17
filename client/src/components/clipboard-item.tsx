@@ -29,17 +29,17 @@ export function ClipboardItem({ item }: ClipboardItemProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const categoryColors = {
-    work: "bg-blue-100 text-blue-800",
-    research: "bg-green-100 text-green-800", 
-    development: "bg-purple-100 text-purple-800",
-    personal: "bg-orange-100 text-orange-800",
+  const categoryColors: Record<string, string> = {
+    work: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+    research: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300", 
+    development: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
+    personal: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
   };
 
-  const decisionColors = {
-    keep: "bg-green-100 text-green-800",
-    maybe: "bg-yellow-100 text-yellow-800",
-    discard: "bg-red-100 text-red-800",
+  const decisionColors: Record<string, string> = {
+    keep: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+    maybe: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+    discard: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
   };
 
   const updateDecisionMutation = useMutation({
@@ -112,10 +112,66 @@ export function ClipboardItem({ item }: ClipboardItemProps) {
   const isCodeContent = item.category === 'development' && item.content.includes('{') && item.content.includes('}');
   const isUrlContent = item.sourceUrl;
 
+  const cardVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20, 
+      scale: 0.95 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      scale: 1.02,
+      y: -2,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    updating: {
+      scale: 0.98,
+      opacity: 0.7,
+      transition: {
+        duration: 0.2
+      }
+    }
+  };
+
+  const contentVariants = {
+    collapsed: { 
+      height: "auto",
+      opacity: 1 
+    },
+    expanded: { 
+      height: "auto",
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <Card className={`hover:shadow-md transition-shadow ${
-      item.aiDecision === 'maybe' ? 'border-yellow-200 bg-yellow-50/30' : 'border-slate-200'
-    }`}>
+    <motion.div
+      variants={cardVariants}
+      initial="hidden"
+      animate={isUpdating ? "updating" : "visible"}
+      whileHover="hover"
+      layout
+    >
+      <Card className={`transition-all duration-300 ${
+        item.aiDecision === 'maybe' 
+          ? 'border-yellow-200 bg-yellow-50/30 dark:border-yellow-700 dark:bg-yellow-900/10' 
+          : 'border-slate-200 dark:border-slate-700 hover:shadow-lg dark:hover:shadow-slate-900/20'
+      }`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -247,6 +303,7 @@ export function ClipboardItem({ item }: ClipboardItemProps) {
           </div>
         </div>
       </CardContent>
-    </Card>
+      </Card>
+    </motion.div>
   );
 }
