@@ -245,7 +245,10 @@ export function CategoryManager() {
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Category Management</h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={handleOpenDialog} className="gap-2">
+            <Button 
+              onClick={handleOpenDialog} 
+              className="gap-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold shadow-lg"
+            >
               <Plus className="w-4 h-4" />
               Add Category
             </Button>
