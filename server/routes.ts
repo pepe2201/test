@@ -93,6 +93,109 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
+
+  // Update profile route
+  app.patch('/api/auth/profile', async (req: any, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const { firstName, lastName, email } = req.body;
+      let userId;
+
+      if (req.user?.isLocal) {
+        userId = req.user.id;
+      } else if (req.user?.claims?.sub) {
+        userId = req.user.claims.sub;
+      } else {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const updatedUser = await storage.updateUser(userId, {
+        firstName: firstName || null,
+        lastName: lastName || null,
+        email: email || null,
+        updatedAt: new Date(),
+      });
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Change password route (local users only)
+  app.patch('/api/auth/change-password', async (req: any, res) => {
+    try {
+      if (!req.isAuthenticated() || !req.user?.isLocal) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const { currentPassword, newPassword } = req.body;
+      const userId = req.user.id;
+
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+      if (!user || !user.passwordHash) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const isValidPassword = await comparePassword(currentPassword, user.passwordHash);
+      if (!isValidPassword) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+
+      const newPasswordHash = await hashPassword(newPassword);
+      await db.update(users)
+        .set({ passwordHash: newPasswordHash, updatedAt: new Date() })
+        .where(eq(users.id, userId));
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Failed to change password" });
+    }
+  });
+
+  // Delete account route
+  app.delete('/api/auth/delete-account', async (req: any, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      let userId;
+      if (req.user?.isLocal) {
+        userId = req.user.id;
+      } else if (req.user?.claims?.sub) {
+        userId = req.user.claims.sub;
+      } else {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      // Delete user's clipboard items first
+      await db.delete(clipboardItems).where(eq(clipboardItems.userId, userId));
+      
+      // Delete user account
+      await db.delete(users).where(eq(users.id, userId));
+
+      // Logout user
+      req.logout((err: any) => {
+        if (err) {
+          console.error("Logout error after account deletion:", err);
+        }
+        res.json({ success: true });
+      });
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      res.status(500).json({ message: "Failed to delete account" });
+    }
+  });
   
   // Get all clipboard items
   app.get("/api/clipboard", async (req, res) => {

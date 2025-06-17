@@ -26,6 +26,7 @@ export interface IStorage {
   // User operations for Replit Auth
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
