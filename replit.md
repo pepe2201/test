@@ -125,6 +125,10 @@ Changelog:
 - June 17, 2025. Moved Category Manager to main dashboard Categories view for direct category management without navigating to Settings
 - June 17, 2025. Removed Categories tab from Settings page to consolidate category management in dashboard only
 - June 17, 2025. Redesigned home page with modern aesthetics including gradient backgrounds, glassmorphism cards, animated elements, and improved visual hierarchy
+- June 17, 2025. Implemented comprehensive Time Tracking system with database schema updates for tracking accessCount and timeSpentSeconds per clipboard item
+- June 17, 2025. Created Time Tracking analytics dashboard with hourly activity heatmaps, usage trends, and real-time engagement metrics
+- June 17, 2025. Added Time Tracking navigation to sidebar and integrated with main dashboard flow
+- June 17, 2025. Restructured home page to clearly separate "Available Now - Ready to Use" features from "Future Capabilities - Coming Soon" roadmap items
 
 ## User Preferences
 
