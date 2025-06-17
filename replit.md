@@ -122,6 +122,7 @@ Changelog:
 - June 17, 2025. Completed comprehensive authentication system with Replit Auth integration, email/password login, user registration, account settings with profile management, password changes, and account deletion functionality
 - June 17, 2025. Implemented complete custom user categories system with CRUD operations, added Categories tab to Settings page, and made "Add Category" button bright yellow for high visibility
 - June 17, 2025. Fixed Settings navigation from dashboard sidebar to enable proper access to Profile and Categories tabs
+- June 17, 2025. Moved Category Manager to main dashboard Categories view for direct category management without navigating to Settings
 
 ## User Preferences
 
