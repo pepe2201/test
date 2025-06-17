@@ -25,7 +25,6 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CategoryManager } from "@/components/category-manager";
 
 export default function Settings() {
   const { user } = useAuth();
@@ -282,9 +281,8 @@ export default function Settings() {
           {/* Settings Tabs */}
           <motion.div className="lg:col-span-3" variants={itemVariants}>
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="profile">Profile</TabsTrigger>
-                <TabsTrigger value="categories">Categories</TabsTrigger>
                 <TabsTrigger value="security">Security</TabsTrigger>
                 <TabsTrigger value="danger">Danger Zone</TabsTrigger>
               </TabsList>
@@ -347,11 +345,6 @@ export default function Settings() {
                     </form>
                   </CardContent>
                 </Card>
-              </TabsContent>
-
-              {/* Categories Tab */}
-              <TabsContent value="categories" className="space-y-6">
-                <CategoryManager />
               </TabsContent>
 
               {/* Security Tab */}
