@@ -59,8 +59,8 @@ export function StatsBar({ stats }: StatsBarProps) {
                 </div>
               </div>
               <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-slate-600">{stat.title}</p>
-                <p className="text-lg font-semibold text-slate-900">{stat.value}</p>
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{stat.title}</p>
+                <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">{stat.value}</p>
               </div>
             </div>
           </CardContent>

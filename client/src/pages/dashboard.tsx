@@ -9,6 +9,7 @@ import { CategoriesView } from "@/components/categories-view";
 import { AddContentModal } from "@/components/add-content-modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Search, Plus, RefreshCw, Grid, X } from "lucide-react";
 import type { ClipboardItem } from "@shared/schema";
 
