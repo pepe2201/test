@@ -2,10 +2,21 @@ import { pgTable, text, serial, integer, boolean, timestamp, varchar, jsonb, ind
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// User-defined categories table
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  color: text("color").notNull().default("#6b7280"), // hex color code
+  icon: text("icon").default("folder"), // lucide icon name
+  userId: text("user_id").notNull(), // owner of the category
+  isDefault: boolean("is_default").default(false), // system default categories
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const clipboardItems = pgTable("clipboard_items", {
   id: serial("id").primaryKey(),
   content: text("content").notNull(),
-  category: text("category").notNull(), // work, research, development, personal
+  category: text("category").notNull(), // references categories.name or default categories
   aiDecision: text("ai_decision").notNull(), // keep, discard, maybe
   aiAnalysis: text("ai_analysis").notNull(),
   title: text("title"),
@@ -17,6 +28,7 @@ export const clipboardItems = pgTable("clipboard_items", {
   tags: text("tags").array().default([]), // auto-generated tags based on content analysis
   language: text("language"), // programming language for code content
   confidence: integer("confidence").default(80), // confidence score for content type detection (0-100)
+  userId: text("user_id").notNull().default("root"), // owner of the clipboard item
   createdAt: timestamp("created_at").defaultNow().notNull(),
   manualOverride: boolean("manual_override").default(false),
 });
@@ -32,9 +44,30 @@ export const analyzeContentSchema = z.object({
   forceKeep: z.boolean().default(false),
 });
 
+export const insertCategorySchema = createInsertSchema(categories).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const createCategorySchema = z.object({
+  name: z.string().min(1, "Category name is required").max(50, "Name too long"),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format"),
+  icon: z.string().min(1, "Icon is required"),
+});
+
+export const updateCategorySchema = z.object({
+  name: z.string().min(1, "Category name is required").max(50, "Name too long").optional(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format").optional(),
+  icon: z.string().min(1, "Icon is required").optional(),
+});
+
 export type InsertClipboardItem = z.infer<typeof insertClipboardItemSchema>;
 export type ClipboardItem = typeof clipboardItems.$inferSelect;
 export type AnalyzeContentRequest = z.infer<typeof analyzeContentSchema>;
+export type Category = typeof categories.$inferSelect;
+export type InsertCategory = z.infer<typeof insertCategorySchema>;
+export type CreateCategoryRequest = z.infer<typeof createCategorySchema>;
+export type UpdateCategoryRequest = z.infer<typeof updateCategorySchema>;
 
 export const searchClipboardSchema = z.object({
   query: z.string().min(1, "Search query is required"),

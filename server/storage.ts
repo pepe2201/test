@@ -1,4 +1,4 @@
-import { clipboardItems, users, type ClipboardItem, type InsertClipboardItem, type User, type UpsertUser } from "@shared/schema";
+import { clipboardItems, users, categories, type ClipboardItem, type InsertClipboardItem, type User, type UpsertUser, type Category, type InsertCategory } from "@shared/schema";
 import { format, isToday, isYesterday, startOfDay, endOfDay } from "date-fns";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, ilike, or } from "drizzle-orm";
@@ -22,6 +22,13 @@ export interface IStorage {
     todayItems: number;
     categories: Record<string, number>;
   }>;
+  
+  // Category operations
+  getUserCategories(userId: string): Promise<Category[]>;
+  createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, userId: string, updates: Partial<Category>): Promise<Category | undefined>;
+  deleteCategory(id: number, userId: string): Promise<boolean>;
+  getCategoryByName(name: string, userId: string): Promise<Category | undefined>;
   
   // User operations for Replit Auth
   getUser(id: string): Promise<User | undefined>;
