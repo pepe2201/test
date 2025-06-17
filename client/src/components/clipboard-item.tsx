@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,8 @@ interface ClipboardItemProps {
 
 export function ClipboardItem({ item }: ClipboardItemProps) {
   const [showEnhanced, setShowEnhanced] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -41,14 +44,17 @@ export function ClipboardItem({ item }: ClipboardItemProps) {
 
   const updateDecisionMutation = useMutation({
     mutationFn: async ({ id, decision }: { id: number; decision: string }) => {
+      setIsUpdating(true);
       return apiRequest("PATCH", `/api/clipboard/${id}/decision`, { decision });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/clipboard"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       toast({ title: "Item updated successfully" });
+      setIsUpdating(false);
     },
     onError: () => {
+      setIsUpdating(false);
       toast({ title: "Failed to update item", variant: "destructive" });
     },
   });
