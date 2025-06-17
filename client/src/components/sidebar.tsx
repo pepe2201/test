@@ -72,15 +72,14 @@ export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate,
           <span className="font-medium">Search</span>
         </button>
 
-        <button 
-          onClick={() => onNavigate?.('settings')}
-          className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors w-full text-left ${
-            currentView === 'settings' ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-          }`}
-        >
-          <Settings className="w-5 h-5" />
-          <span className="font-medium">Settings</span>
-        </button>
+        <Link href="/settings">
+          <button 
+            className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors w-full text-left text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800`}
+          >
+            <Settings className="w-5 h-5" />
+            <span className="font-medium">Settings</span>
+          </button>
+        </Link>
       </nav>
 
       {/* Category Filters */}
