@@ -4,7 +4,7 @@ import express from "express";
 import passport from "passport";
 import { storage } from "./storage";
 import { analyzeContent, enhanceContent, summarizeContent } from "./services/openai";
-import { analyzeContentSchema, searchClipboardSchema } from "@shared/schema";
+import { analyzeContentSchema, searchClipboardSchema, createCategorySchema, updateCategorySchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { setupLocalAuth, isLocalAuthenticated, createLocalUser } from "./localAuth";
 
@@ -271,6 +271,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const analysis = await analyzeContent(content, manualCategory, forceKeep);
       
+      // Get userId from request (default to 'root' for development)
+      const userId = req.user?.claims?.sub || req.user?.isLocal ? 'root' : 'root';
+      
       const item = await storage.createItem({
         content,
         category: analysis.category,
@@ -285,6 +288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         tags: analysis.tags,
         language: analysis.language,
         confidence: analysis.typeConfidence,
+        userId,
         manualOverride: forceKeep || !!manualCategory,
       });
 
@@ -377,6 +381,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Item deleted" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete item" });
+    }
+  });
+
+  // Category management endpoints
+  app.get("/api/categories", async (req: any, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const userId = req.user?.claims?.sub || (req.user?.isLocal ? 'root' : 'root');
+      const categories = await storage.getUserCategories(userId);
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch categories" });
+    }
+  });
+
+  app.post("/api/categories", async (req: any, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const userId = req.user?.claims?.sub || (req.user?.isLocal ? 'root' : 'root');
+      const { name, color, icon } = createCategorySchema.parse(req.body);
+
+      // Check if category name already exists for this user
+      const existing = await storage.getCategoryByName(name, userId);
+      if (existing) {
+        return res.status(400).json({ message: "Category name already exists" });
+      }
+
+      const category = await storage.createCategory({
+        name,
+        color,
+        icon,
+        userId,
+        isDefault: false,
+      });
+
+      res.json(category);
+    } catch (error: any) {
+      if (error.issues) {
+        res.status(400).json({ message: "Invalid category data", errors: error.issues });
+      } else {
+        res.status(500).json({ message: "Failed to create category" });
+      }
+    }
+  });
+
+  app.patch("/api/categories/:id", async (req: any, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const userId = req.user?.claims?.sub || (req.user?.isLocal ? 'root' : 'root');
+      const categoryId = parseInt(req.params.id);
+      const updates = updateCategorySchema.parse(req.body);
+
+      // Check if new name already exists (if name is being updated)
+      if (updates.name) {
+        const existing = await storage.getCategoryByName(updates.name, userId);
+        if (existing && existing.id !== categoryId) {
+          return res.status(400).json({ message: "Category name already exists" });
+        }
+      }
+
+      const category = await storage.updateCategory(categoryId, userId, updates);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found or access denied" });
+      }
+
+      res.json(category);
+    } catch (error: any) {
+      if (error.issues) {
+        res.status(400).json({ message: "Invalid category data", errors: error.issues });
+      } else {
+        res.status(500).json({ message: "Failed to update category" });
+      }
+    }
+  });
+
+  app.delete("/api/categories/:id", async (req: any, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const userId = req.user?.claims?.sub || (req.user?.isLocal ? 'root' : 'root');
+      const categoryId = parseInt(req.params.id);
+
+      const deleted = await storage.deleteCategory(categoryId, userId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Category not found or access denied" });
+      }
+
+      res.json({ message: "Category deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete category" });
     }
   });
 

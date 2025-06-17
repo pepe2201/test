@@ -178,6 +178,69 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return user;
   }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  // Category operations
+  async getUserCategories(userId: string): Promise<Category[]> {
+    const userCategories = await db
+      .select()
+      .from(categories)
+      .where(eq(categories.userId, userId))
+      .orderBy(categories.name);
+    
+    // Include default categories for all users
+    const defaultCategories: Category[] = [
+      { id: -1, name: 'work', color: '#3b82f6', icon: 'briefcase', userId: 'system', isDefault: true, createdAt: new Date() },
+      { id: -2, name: 'research', color: '#10b981', icon: 'search', userId: 'system', isDefault: true, createdAt: new Date() },
+      { id: -3, name: 'development', color: '#8b5cf6', icon: 'code', userId: 'system', isDefault: true, createdAt: new Date() },
+      { id: -4, name: 'personal', color: '#f59e0b', icon: 'user', userId: 'system', isDefault: true, createdAt: new Date() },
+    ];
+    
+    return [...defaultCategories, ...userCategories];
+  }
+
+  async createCategory(category: InsertCategory): Promise<Category> {
+    const [newCategory] = await db
+      .insert(categories)
+      .values(category)
+      .returning();
+    return newCategory;
+  }
+
+  async updateCategory(id: number, userId: string, updates: Partial<Category>): Promise<Category | undefined> {
+    const [category] = await db
+      .update(categories)
+      .set(updates)
+      .where(and(eq(categories.id, id), eq(categories.userId, userId)))
+      .returning();
+    return category;
+  }
+
+  async deleteCategory(id: number, userId: string): Promise<boolean> {
+    const result = await db
+      .delete(categories)
+      .where(and(eq(categories.id, id), eq(categories.userId, userId)));
+    return result.rowCount > 0;
+  }
+
+  async getCategoryByName(name: string, userId: string): Promise<Category | undefined> {
+    const [category] = await db
+      .select()
+      .from(categories)
+      .where(and(eq(categories.name, name), eq(categories.userId, userId)));
+    return category;
+  }
 }
 
 export const storage = new DatabaseStorage();
