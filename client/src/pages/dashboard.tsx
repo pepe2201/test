@@ -78,7 +78,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-900">
       <Sidebar 
         stats={stats}
         onCategorySelect={setSelectedCategory}
@@ -89,12 +89,12 @@ export default function Dashboard() {
       
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <header className="bg-white border-b border-slate-200 px-6 py-4">
+        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
           <div className="flex items-center justify-between">
             {(currentView === 'timeline' || currentView === 'search' || !currentView) ? (
               <div className="flex items-center space-x-4 flex-1 max-w-2xl">
                 <div className="relative flex-1">
-                  <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                   <Input
                     type="text"
                     placeholder="Search clipboard history..."
@@ -133,10 +133,10 @@ export default function Dashboard() {
             ) : (
               <div className="flex-1">
                 {currentView === 'settings' && (
-                  <h1 className="text-xl font-semibold text-slate-900">Application Settings</h1>
+                  <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Application Settings</h1>
                 )}
                 {currentView === 'categories' && (
-                  <h1 className="text-xl font-semibold text-slate-900">Content Categories</h1>
+                  <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Content Categories</h1>
                 )}
               </div>
             )}
@@ -174,7 +174,7 @@ export default function Dashboard() {
               
               {isLoading ? (
                 <div className="flex items-center justify-center h-64">
-                  <div className="text-slate-500">Loading clipboard items...</div>
+                  <div className="text-slate-500 dark:text-slate-400">Loading clipboard items...</div>
                 </div>
               ) : viewMode === 'grid' ? (
                 <GridView items={items} />

@@ -84,34 +84,34 @@ export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate,
       </nav>
 
       {/* Category Filters */}
-      <div className="p-4 border-t border-slate-200">
-        <h3 className="text-sm font-medium text-slate-700 mb-3">Categories</h3>
+      <div className="p-4 border-t border-slate-200 dark:border-slate-700">
+        <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Categories</h3>
         <div className="space-y-2">
           {categories.map((category) => (
             <button
               key={category.key}
               onClick={() => onCategorySelect(selectedCategory === category.key ? undefined : category.key)}
               className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors ${
-                selectedCategory === category.key ? 'bg-slate-100' : 'hover:bg-slate-50'
+                selectedCategory === category.key ? 'bg-slate-100 dark:bg-slate-800' : 'hover:bg-slate-50 dark:hover:bg-slate-800'
               }`}
             >
-              <span className="flex items-center space-x-2 text-sm text-slate-600">
+              <span className="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-300">
                 <Circle className={`w-2 h-2 ${category.color}`} />
                 <span>{category.name}</span>
               </span>
-              <span className="text-xs text-slate-400">{category.count}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">{category.count}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Status Indicator */}
-      <div className="p-4 border-t border-slate-200">
+      <div className="p-4 border-t border-slate-200 dark:border-slate-700">
         <div className="flex items-center space-x-2 text-sm">
           <Circle className="w-2 h-2 bg-green-500 animate-pulse" />
-          <span className="text-slate-600">AI Monitoring Active</span>
+          <span className="text-slate-600 dark:text-slate-300">AI Monitoring Active</span>
         </div>
-        <p className="text-xs text-slate-400 mt-1">Ready to analyze content</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Ready to analyze content</p>
       </div>
     </aside>
   );

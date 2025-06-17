@@ -42,8 +42,8 @@ export function StatsBar({ stats }: StatsBarProps) {
       title: "Today",
       value: stats?.todayItems || 0,
       icon: Clock,
-      bgColor: "bg-slate-100",
-      iconColor: "text-slate-600",
+      bgColor: "bg-slate-100 dark:bg-slate-800",
+      iconColor: "text-slate-600 dark:text-slate-400",
     },
   ];
 
