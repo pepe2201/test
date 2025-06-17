@@ -1,9 +1,10 @@
-import { clipboardItems, type ClipboardItem, type InsertClipboardItem } from "@shared/schema";
+import { clipboardItems, users, type ClipboardItem, type InsertClipboardItem, type User, type UpsertUser } from "@shared/schema";
 import { format, isToday, isYesterday, startOfDay, endOfDay } from "date-fns";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, ilike, or } from "drizzle-orm";
 
 export interface IStorage {
+  // Clipboard operations
   getItem(id: number): Promise<ClipboardItem | undefined>;
   getAllItems(): Promise<ClipboardItem[]>;
   getItemsByCategory(category: string): Promise<ClipboardItem[]>;
@@ -21,6 +22,10 @@ export interface IStorage {
     todayItems: number;
     categories: Record<string, number>;
   }>;
+  
+  // User operations for Replit Auth
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -143,6 +148,27 @@ export class DatabaseStorage implements IStorage {
     };
     
     return stats;
+  }
+
+  // User operations for Replit Auth
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
   }
 }
 
