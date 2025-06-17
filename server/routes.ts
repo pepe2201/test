@@ -6,7 +6,7 @@ import { storage } from "./storage";
 import { analyzeContent, enhanceContent, summarizeContent } from "./services/openai";
 import { analyzeContentSchema, searchClipboardSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { setupLocalAuth, isLocalAuthenticated } from "./localAuth";
+import { setupLocalAuth, isLocalAuthenticated, createLocalUser } from "./localAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication middleware
@@ -15,14 +15,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Parse JSON for login requests (already handled in main app)
 
-  // Local login route for development
+  // Registration route
+  app.post('/api/auth/local/register', async (req, res) => {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+      }
+
+      const user = await createLocalUser({ email, password, firstName, lastName });
+      
+      // Auto-login after registration
+      req.logIn({ id: user.id, isLocal: true }, (err: any) => {
+        if (err) {
+          return res.status(500).json({ message: 'Registration successful but login failed' });
+        }
+        res.json({ success: true, user: { id: user.id, isLocal: true } });
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message || 'Registration failed' });
+    }
+  });
+
+  // Local login route
   app.post('/api/auth/local/login', (req, res, next) => {
     passport.authenticate('local', (err: any, user: any, info: any) => {
       if (err) {
         return res.status(500).json({ message: 'Authentication error' });
       }
       if (!user) {
-        return res.status(401).json({ message: info.message || 'Invalid credentials' });
+        return res.status(401).json({ message: info.message || 'Invalid email or password' });
       }
       
       req.logIn(user, (err: any) => {

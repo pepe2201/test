@@ -23,13 +23,17 @@ export default function Landing() {
     setIsLoading(true);
     
     try {
-      await apiRequest("/api/auth/local/login", {
+      const response = await fetch("/api/auth/local/login", {
         method: "POST",
-        body: JSON.stringify({ username, password }),
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ username, password }),
       });
+      
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
       
       // Reload page to trigger auth state update
       window.location.reload();
