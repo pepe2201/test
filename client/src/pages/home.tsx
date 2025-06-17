@@ -131,25 +131,27 @@ export default function Home() {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <motion.div
-              className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700"
-              whileHover={{ 
-                scale: 1.02,
-                boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                transition: { duration: 0.2 }
-              }}
-            >
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                Account Settings
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400 mb-4">
-                Manage your profile and preferences
-              </p>
-              <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400">
-                <Settings className="w-4 h-4" />
-                <span>Coming Soon</span>
-              </div>
-            </motion.div>
+            <Link href="/settings">
+              <motion.div
+                className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 cursor-pointer"
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                  Account Settings
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                  Manage your profile and preferences
+                </p>
+                <div className="text-blue-600 dark:text-blue-400 font-medium">
+                  Open Settings →
+                </div>
+              </motion.div>
+            </Link>
           </motion.div>
         </motion.div>
 
