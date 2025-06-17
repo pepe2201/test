@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { analyzeContentType, generateSmartTitle, type ContentTags } from "./contentAnalyzer";
 
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "your-api-key-here"
@@ -14,6 +15,10 @@ export interface ContentAnalysis {
   summary?: string;
   sourceUrl?: string;
   wordCount: number;
+  contentType: string;
+  tags: string[];
+  language?: string;
+  typeConfidence: number;
 }
 
 export async function analyzeContent(content: string, manualCategory?: string, forceKeep?: boolean): Promise<ContentAnalysis> {

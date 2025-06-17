@@ -13,6 +13,10 @@ export const clipboardItems = pgTable("clipboard_items", {
   summary: text("summary"),
   sourceUrl: text("source_url"),
   wordCount: integer("word_count").default(0),
+  contentType: text("content_type").notNull().default("text"), // url, code, email, phone, text, json, markdown, sql, command, path
+  tags: text("tags").array().default([]), // auto-generated tags based on content analysis
+  language: text("language"), // programming language for code content
+  confidence: integer("confidence").default(80), // confidence score for content type detection (0-100)
   createdAt: timestamp("created_at").defaultNow().notNull(),
   manualOverride: boolean("manual_override").default(false),
 });
