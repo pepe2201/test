@@ -3,6 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Sidebar } from "@/components/sidebar";
 import { StatsBar } from "@/components/stats-bar";
 import { TimelineView } from "@/components/timeline-view";
+import { GridView } from "@/components/grid-view";
+import { SettingsView } from "@/components/settings-view";
+import { CategoriesView } from "@/components/categories-view";
 import { AddContentModal } from "@/components/add-content-modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -81,60 +84,74 @@ export default function Dashboard() {
         onCategorySelect={setSelectedCategory}
         selectedCategory={selectedCategory}
         onNavigate={setCurrentView}
+        currentView={currentView}
       />
       
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
         <header className="bg-white border-b border-slate-200 px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 flex-1 max-w-2xl">
-              <div className="relative flex-1">
-                <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-                <Input
-                  type="text"
-                  placeholder="Search clipboard history..."
-                  className="pl-10 pr-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                />
-                {searchQuery && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6"
-                    onClick={clearSearch}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
+            {(currentView === 'timeline' || currentView === 'search' || !currentView) ? (
+              <div className="flex items-center space-x-4 flex-1 max-w-2xl">
+                <div className="relative flex-1">
+                  <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search clipboard history..."
+                    className="pl-10 pr-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  />
+                  {searchQuery && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6"
+                      onClick={clearSearch}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+                <Button 
+                  onClick={handleSearch} 
+                  disabled={isSearching || !searchQuery.trim()}
+                  variant="outline"
+                >
+                  {isSearching ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Search className="w-4 h-4" />
+                  )}
+                </Button>
+                <Button onClick={() => setShowModal(true)} className="bg-blue-600 hover:bg-blue-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Content
+                </Button>
+              </div>
+            ) : (
+              <div className="flex-1">
+                {currentView === 'settings' && (
+                  <h1 className="text-xl font-semibold text-slate-900">Application Settings</h1>
+                )}
+                {currentView === 'categories' && (
+                  <h1 className="text-xl font-semibold text-slate-900">Content Categories</h1>
                 )}
               </div>
-              <Button 
-                onClick={handleSearch} 
-                disabled={isSearching || !searchQuery.trim()}
-                variant="outline"
-              >
-                {isSearching ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Search className="w-4 h-4" />
-                )}
-              </Button>
-              <Button onClick={() => setShowModal(true)} className="bg-blue-600 hover:bg-blue-700">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Content
-              </Button>
-            </div>
+            )}
             
             <div className="flex items-center space-x-3">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setViewMode(viewMode === 'timeline' ? 'grid' : 'timeline')}
-                className={viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : ''}
-              >
-                <Grid className="w-5 h-5" />
-              </Button>
+              {(currentView === 'timeline' || !currentView) && (
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setViewMode(viewMode === 'timeline' ? 'grid' : 'timeline')}
+                  className={viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : ''}
+                >
+                  <Grid className="w-5 h-5" />
+                </Button>
+              )}
               <Button variant="ghost" size="icon" onClick={() => refetch()}>
                 <RefreshCw className="w-5 h-5" />
               </Button>
@@ -144,14 +161,27 @@ export default function Dashboard() {
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto p-6">
-          <StatsBar stats={stats} />
-          
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-slate-500">Loading clipboard items...</div>
-            </div>
+          {currentView === 'settings' ? (
+            <SettingsView />
+          ) : currentView === 'categories' ? (
+            <CategoriesView onCategorySelect={(category) => {
+              setSelectedCategory(category);
+              setCurrentView('timeline');
+            }} />
           ) : (
-            <TimelineView items={items} />
+            <>
+              <StatsBar stats={stats} />
+              
+              {isLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-slate-500">Loading clipboard items...</div>
+                </div>
+              ) : viewMode === 'grid' ? (
+                <GridView items={items} />
+              ) : (
+                <TimelineView items={items} />
+              )}
+            </>
           )}
         </div>
       </main>

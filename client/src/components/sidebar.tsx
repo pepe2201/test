@@ -14,9 +14,10 @@ interface SidebarProps {
   onCategorySelect: (category: string | undefined) => void;
   selectedCategory?: string;
   onNavigate?: (view: string) => void;
+  currentView?: string;
 }
 
-export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate }: SidebarProps) {
+export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate, currentView }: SidebarProps) {
   const categories = [
     { key: 'work', name: 'Work Notes', color: 'bg-blue-500', count: stats?.categories?.work || 0 },
     { key: 'research', name: 'Research', color: 'bg-green-500', count: stats?.categories?.research || 0 },
@@ -41,14 +42,21 @@ export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate 
 
       {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-2">
-        <Link href="/" className="flex items-center space-x-3 px-3 py-2 bg-blue-600 text-white rounded-lg">
+        <button
+          onClick={() => onNavigate?.('timeline')}
+          className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors w-full text-left ${
+            !currentView || currentView === 'timeline' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
           <Clipboard className="w-5 h-5" />
           <span className="font-medium">Clipboard</span>
-        </Link>
+        </button>
         
         <button 
           onClick={() => onNavigate?.('categories')}
-          className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left"
+          className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors w-full text-left ${
+            currentView === 'categories' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+          }`}
         >
           <FolderOpen className="w-5 h-5" />
           <span className="font-medium">Categories</span>
@@ -56,7 +64,9 @@ export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate 
 
         <button 
           onClick={() => onNavigate?.('search')}
-          className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left"
+          className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors w-full text-left ${
+            currentView === 'search' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+          }`}
         >
           <Search className="w-5 h-5" />
           <span className="font-medium">Search</span>
@@ -64,7 +74,9 @@ export function Sidebar({ stats, onCategorySelect, selectedCategory, onNavigate 
 
         <button 
           onClick={() => onNavigate?.('settings')}
-          className="flex items-center space-x-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors w-full text-left"
+          className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors w-full text-left ${
+            currentView === 'settings' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+          }`}
         >
           <Settings className="w-5 h-5" />
           <span className="font-medium">Settings</span>
