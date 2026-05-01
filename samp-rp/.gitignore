@@ -1,0 +1,18 @@
+# Compiler / sampctl
+gamemodes/*.amx
+*.amx
+dependencies/
+plugins/*.so
+plugins/*.dll
+include/
+
+# Logs and runtime
+log.txt
+crashinfo.txt
+server_log.txt
+scriptfiles/
+
+# Editor
+.vscode/
+.idea/
+*.swp

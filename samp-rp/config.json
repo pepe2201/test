@@ -1,0 +1,32 @@
+{
+  "name": "samp-rp | open.mp Roleplay",
+  "rcon_password": "CHANGE_ME",
+  "max_players": 200,
+  "port": 7777,
+  "language": "English / Deutsch",
+  "website": "https://example.org",
+  "gamemodes": ["rp 1"],
+  "filterscripts": [],
+  "plugins": [
+    "mysql",
+    "streamer",
+    "sscanf",
+    "Pawn.CMD",
+    "samp-bcrypt"
+  ],
+  "announce": false,
+  "query": true,
+  "rcon": false,
+  "logging": {
+    "enable": true,
+    "log_chat": true,
+    "log_deaths": true
+  },
+  "network": {
+    "use_lan_mode": false,
+    "player_timeout": 10000,
+    "minimum_connection_time": 0,
+    "messages_limit": 500,
+    "messages_per_interval": 20
+  }
+}
