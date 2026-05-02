@@ -29,9 +29,12 @@
 // utils.inc references player accessors; include it after character.inc.
 
 // ----- player ------------------------------------------------------------
+// phone.inc is loaded between inventory and account because account.inc calls
+// Phone_AssignNumber on character creation.
 #include "modules/player/character.inc"
 #include "modules/core/utils.inc"
 #include "modules/player/inventory.inc"
+#include "modules/communication/phone.inc"
 #include "modules/player/account.inc"
 
 // ----- world & content --------------------------------------------------
@@ -44,6 +47,7 @@
 #include "modules/communication/chat.inc"
 #include "modules/admin/admin.inc"
 #include "modules/misc/anticheat.inc"
+#include "modules/misc/drugs.inc"
 
 // =====================================================================
 // Lifecycle
@@ -204,6 +208,12 @@ CMD:help(playerid, params[])
         "{FFFFFF}/bank  /stats\n\n"
         "{FFD700}Property\n"
         "{FFFFFF}/enter /exit /hlock /buyhouse /vlock\n\n"
+        "{FFD700}Business\n"
+        "{FFFFFF}/enterbiz /exitbiz /buybiz /bizmenu /shop /buy /refuel /eat\n\n"
+        "{FFD700}Phone\n"
+        "{FFFFFF}/phone /call /pickup /hangup /tell /sms /inbox\n\n"
+        "{FFD700}Drugs\n"
+        "{FFFFFF}/buydrug /usedrug /selldrug /accept\n\n"
         "{FFD700}Jobs\n"
         "{FFFFFF}/jobs /takejob /quitjob /work /deliver /meter\n\n"
         "{FFD700}Faction\n"

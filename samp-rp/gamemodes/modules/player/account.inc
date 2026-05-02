@@ -118,7 +118,11 @@ public  OnCharacterCreated(playerid)
     new id = cache_insert_id();
     gPlayer[playerid][e_char_id] = id;
     gPlayer[playerid][e_cash]    = STARTING_CASH;
-    SendInfo(playerid, "Character created. Welcome to the city.");
+    Phone_AssignNumber(playerid);
+    new buf[80];
+    format(buf, sizeof buf, "Character created. Your phone number: %d.",
+        gPlayer[playerid][e_phone]);
+    SendInfo(playerid, buf);
     SetSpawnInfo(playerid, NO_TEAM, 0, SPAWN_X, SPAWN_Y, SPAWN_Z, SPAWN_A, 0,0,0,0,0,0);
     SpawnPlayer(playerid);
     return 1;

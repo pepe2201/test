@@ -81,6 +81,6 @@ to be touched.
 | Admin                   | Levels 1–6, `/kick /ban /goto /gethere /a /setlevel`   |
 | Anticheat               | Money desync, weapon whitelist, teleport detection     |
 | Businesses              | 24/7, gas, gun shop, restaurant, clothes; till + price |
-| Phone                   | **TODO** — schema present, gameplay pending            |
-| Drugs                   | **TODO** — item ids reserved, gameplay pending         |
+| Phone                   | /call /pickup /hangup /tell /sms /inbox, ringing FSM   |
+| Drugs                   | weed/coke/meth: buy at dealer, /usedrug, /selldrug+/accept |
 | Tutorial                | **TODO**                                               |
