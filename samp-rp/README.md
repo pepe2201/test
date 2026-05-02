@@ -80,7 +80,7 @@ to be touched.
 | Chat                    | `/me /do /low /shout /b`, OOC, faction radio           |
 | Admin                   | Levels 1–6, `/kick /ban /goto /gethere /a /setlevel`   |
 | Anticheat               | Money desync, weapon whitelist, teleport detection     |
-| Businesses              | **Stub** — schema present, gameplay TODO               |
-| Phone                   | **Stub** — TODO                                        |
-| Drugs                   | **Stub** — TODO                                        |
-| Tutorial                | **Stub** — TODO                                        |
+| Businesses              | 24/7, gas, gun shop, restaurant, clothes; till + price |
+| Phone                   | **TODO** — schema present, gameplay pending            |
+| Drugs                   | **TODO** — item ids reserved, gameplay pending         |
+| Tutorial                | **TODO**                                               |

@@ -39,6 +39,7 @@
 #include "modules/jobs/jobs.inc"
 #include "modules/world/vehicles.inc"
 #include "modules/world/houses.inc"
+#include "modules/world/businesses.inc"
 #include "modules/economy/banking.inc"
 #include "modules/communication/chat.inc"
 #include "modules/admin/admin.inc"
@@ -69,6 +70,7 @@ public OnGameModeInit()
     Job_LoadAll();
     Vehicle_LoadAll();
     House_LoadAll();
+    Business_LoadAll();
 
     SetTimer("AC_Tick",          1000, true);
     SetTimer("AC_PosTick",       1000, true);

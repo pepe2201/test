@@ -90,6 +90,30 @@
 #define EMB_GREY                "{AFAFAF}"
 
 // ---------------------------------------------------------------------------
+// Business types (mirrors `businesses.type` column)
+// ---------------------------------------------------------------------------
+#define BIZ_TYPE_247        0
+#define BIZ_TYPE_GAS        1
+#define BIZ_TYPE_GUNSHOP    2
+#define BIZ_TYPE_RESTAURANT 3
+#define BIZ_TYPE_CLOTHES    4
+
+// ---------------------------------------------------------------------------
+// Phone
+// ---------------------------------------------------------------------------
+#define PHONE_NUMBER_MIN    1000000
+#define PHONE_NUMBER_MAX    9999999
+#define PHONE_RING_TIMEOUT  20      // seconds before unanswered call drops
+
+// ---------------------------------------------------------------------------
+// Drugs
+// ---------------------------------------------------------------------------
+#define DRUG_EFFECT_DURATION_S  60   // seconds
+#define DRUG_PRICE_WEED         50
+#define DRUG_PRICE_COKE        150
+#define DRUG_PRICE_METH        120
+
+// ---------------------------------------------------------------------------
 // Dialog IDs (range-based to avoid collisions across modules)
 // ---------------------------------------------------------------------------
 #define DLG_LOGIN               1000
@@ -105,3 +129,10 @@
 #define DLG_FACTION_MENU        1500
 #define DLG_JOB_MENU            1600
 #define DLG_ADMIN_MENU          1900
+#define DLG_BIZ_MENU            1700
+#define DLG_BIZ_BUY             1701
+#define DLG_BIZ_PRICE           1702
+#define DLG_BIZ_GUNS            1703
+#define DLG_BIZ_CLOTHES         1704
+#define DLG_PHONE_INBOX         1800
+#define DLG_DRUG_BUY            2000

@@ -155,7 +155,8 @@ CREATE TABLE IF NOT EXISTS houses (
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------------
--- businesses (stub — gameplay TBD)
+-- businesses
+-- Types: 0=24/7 store, 1=gas station, 2=gun shop, 3=restaurant, 4=clothes
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS businesses (
     id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -164,10 +165,31 @@ CREATE TABLE IF NOT EXISTS businesses (
     name          VARCHAR(64) NOT NULL,
     price         INT UNSIGNED NOT NULL DEFAULT 100000,
     till          BIGINT NOT NULL DEFAULT 0,
+    product_price INT UNSIGNED NOT NULL DEFAULT 50,
+    locked        TINYINT(1) NOT NULL DEFAULT 0,
+    interior_id   TINYINT UNSIGNED NOT NULL DEFAULT 17, -- 24/7 default
     pos_x         FLOAT NOT NULL,
     pos_y         FLOAT NOT NULL,
     pos_z         FLOAT NOT NULL,
-    PRIMARY KEY (id)
+    int_x         FLOAT NOT NULL DEFAULT -25.88,
+    int_y         FLOAT NOT NULL DEFAULT -185.86,
+    int_z         FLOAT NOT NULL DEFAULT 1003.55,
+    PRIMARY KEY (id),
+    KEY idx_owner (owner_char)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------------
+-- sms: persistent inbox per character (last 50 kept by app logic)
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS sms (
+    id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    from_char_id    INT UNSIGNED NOT NULL,
+    from_number     INT UNSIGNED NOT NULL,
+    to_char_id      INT UNSIGNED NOT NULL,
+    body            VARCHAR(160) NOT NULL,
+    sent_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_to (to_char_id, sent_at)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------------
@@ -203,5 +225,13 @@ INSERT IGNORE INTO jobs (id, name, min_level, base_pay) VALUES
     (3, 'Mechanic', 2, 250),
     (4, 'Pilot',    5, 500),
     (5, 'Lawyer',   3, 300);
+
+-- A handful of seed businesses scattered in LS to test ownership flow.
+INSERT IGNORE INTO businesses (id, type, name, price, product_price, pos_x, pos_y, pos_z, interior_id, int_x, int_y, int_z) VALUES
+    (1, 0, '24/7 Idlewood',        80000,   50, 2104.0, -1806.0, 13.5, 17,  -25.88,  -185.86, 1003.55),
+    (2, 1, 'Xoomer Gas',          120000,   12, 1597.5, 2199.5, 10.8,  0,  1597.50, 2199.50,   10.82),
+    (3, 2, 'Ammu-Nation Pershing',150000,  500, 1366.0, -1279.0, 13.5,  1,  286.15,   -39.50, 1001.51),
+    (4, 3, 'Cluckin Bell',         70000,   20, 2412.0, -1976.0, 13.5,  9,  365.93, -10.49,  1001.85),
+    (5, 4, 'Binco LS',             60000,  100, 2247.0, -1665.0, 15.5, 15,  207.74,  -109.0, 1005.13);
 
 SET FOREIGN_KEY_CHECKS = 1;
